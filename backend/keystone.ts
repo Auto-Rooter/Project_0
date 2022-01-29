@@ -8,6 +8,7 @@ import {
 import { User } from './schemas/User';
 import { Product } from './schemas/Product';
 import { ProductImage } from './schemas/ProductImage';
+import { insertSeedData } from './seed-data';
 
 const databaseURL =
   process.env.DATABASE_URL || 'mongodb://localhost:27017/Sick_Fits';
@@ -39,7 +40,12 @@ export default withAuth(
     db: {
       adapter: 'mongoose',
       url: databaseURL,
-      // Add data seeding
+      onConnect: async (keystone) => {
+        if (process.argv.includes('--seed-data')) {
+          console.log('[*] Seeding the DB .....');
+          await insertSeedData(keystone);
+        }
+      },
     },
     lists: createSchema({
       User,
