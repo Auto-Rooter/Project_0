@@ -6,6 +6,7 @@ import {
   statelessSessions,
 } from '@keystone-next/keystone/session';
 import { User } from './schemas/User';
+import { Product } from './schemas/Product';
 
 const databaseURL =
   process.env.DATABASE_URL || 'mongodb://localhost:27017/Sick_Fits';
@@ -41,7 +42,7 @@ export default withAuth(
     },
     lists: createSchema({
       User,
-      // Schema items go here
+      Product,
     }),
     ui: {
       // Show the UI only for the User who pass this, we only care about the logged in user with a valid session
