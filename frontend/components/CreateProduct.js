@@ -1,5 +1,32 @@
+import gql from 'graphql-tag';
+import { useMutation } from '@apollo/client';
 import useForm from '../lib/useForm';
 import Form from './styles/Form';
+import DisplayError from './ErrorMessage';
+
+const CREATE_PRODUCT_MUTATION = gql`
+  mutation CREATE_PRODUCT_MUTATION(
+    $name: String! # ! => is required
+    $description: String!
+    $price: Int!
+    $image: Upload
+  ) {
+    createProduct(
+      data: {
+        name: $name
+        description: $description
+        price: $price
+        status: "AVAILABLE"
+        photo: { create: { image: $image, altText: $name } }
+      }
+    ) {
+      id
+      price
+      description
+      name
+    }
+  }
+`;
 
 export default function CreateProduct() {
   // const [name, setName] = useState('Wes'); // this is a reactive state
@@ -9,15 +36,21 @@ export default function CreateProduct() {
     price: 1234,
     description: 'price desc',
   });
-
+  // createProduct : the function that ran the mutation
+  const [createProduct, { loading, error, data }] = useMutation(
+    CREATE_PRODUCT_MUTATION,
+    { variables: inputs }
+  );
   return (
     <Form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault(); // prevent from sending info to the server directly and putting the info in the URL
-        console.log(`Inputs: ${inputs}`);
+        const res = await createProduct(); // Same as data that come from second ele of the useMutation response array
+        clearForm();
       }}
     >
-      <fieldset aria-busy>
+      <DisplayError error={error} />
+      <fieldset disabled={loading} aria-busy={loading}>
         <label htmlFor="image">
           Image
           <input
