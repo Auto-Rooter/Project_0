@@ -1,5 +1,6 @@
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
+import Router from 'next/router';
 import useForm from '../lib/useForm';
 import Form from './styles/Form';
 import DisplayError from './ErrorMessage';
@@ -48,6 +49,11 @@ export default function CreateProduct() {
         e.preventDefault(); // prevent from sending info to the server directly and putting the info in the URL
         const res = await createProduct(); // Same as data that come from second ele of the useMutation response array
         clearForm();
+        // Go to the new added product
+        Router.push({
+          pathname: `/product/${res.data.createProduct.id}`,
+          // query: for ?id=12233
+        });
       }}
     >
       <DisplayError error={error} />
