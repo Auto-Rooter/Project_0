@@ -52,7 +52,7 @@ export default function CreateProduct() {
         // Go to the new added product
         Router.push({
           pathname: `/product/${res.data.createProduct.id}`,
-          query: res.data.createProduct.id,
+          // query: res.data.createProduct.id,
         });
       }}
     >
